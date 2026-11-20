@@ -331,6 +331,8 @@ def convert(module, kind, registries, out_dir):
         name = f"{kind}-fig{k}"
         alt = "Diagram: " + "; ".join(re.findall(r"\\node[^{]*\{(?:\\small )?([^}]*)\}", fig_tex))
         make_svg(fig_tex, fig_dir / f"{name}.svg")
+        _w = re.search(r'<svg[^>]* width="([0-9.]+)', (fig_dir / f"{name}.svg").read_text())
+        _attr = f' width="{round(float(_w.group(1)) * 1.8)}"' if _w else ""
         md = md.replace(f"ZZFIG{k}ZZ", f"![{alt}](figures/{name}.svg){{ .la-figure }}")
 
     target = out_dir / module / f"{kind}.md"
